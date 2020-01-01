@@ -113,7 +113,9 @@ Pointer<T,size>::Pointer(T *t){
 // Copy constructor.
 template< class T, int size>
 Pointer<T,size>::Pointer(const Pointer &ob){
-
+    typename std::list<PtrDetails<T> >::iterator p;
+    p = findPtrInfo(ob.addr);
+    // ob.refcount++;
     // TODO: Implement Pointer constructor
     // Lab: Smart Pointer Project Lab
 
@@ -158,7 +160,7 @@ bool Pointer<T, size>::collect(){
         }
     } while (p != refContainer.end());
     
-    // TODO: Implement collect function
+    // TODO(ok): Implement collect function
     // LAB: New and Delete Project Lab
     // Note: collect() will be called in the destructor
     return memfreed;
@@ -170,12 +172,41 @@ T *Pointer<T, size>::operator=(T *t){
 
     // TODO: Implement operator==
     // LAB: Smart Pointer Project Lab
+    const auto p1 = findPtrInfo(t);
+    p1->refcount++;
+    if (refContainer.end() == p1) {
+        std::cout << "need a new obj" << std::endl;
+        const PtrDetails<T> p{t};
+        refContainer.push_back(p);
+    } else {
+        p1->refcount++;
+    }
+
+    const auto p2 = findPtrInfo(addr);
+    if (p2->refcount) {
+        p2->refcount--;
+    } else {
+        std::cout << "collect done!" << std::endl;
+    }
+
+    addr = t;
+
+    return t;
 
 }
 // Overload assignment of Pointer to Pointer.
 template <class T, int size>
 Pointer<T, size> &Pointer<T, size>::operator=(Pointer &rv){
+    // typename std::list<PtrDetails<T> >::iterator p;
+    const auto p1 = findPtrInfo(rv.addr);
+    p1->refcount++;
 
+    const auto p2 = findPtrInfo(addr);
+    p2->refcount--;
+
+    addr = rv.addr;
+
+    return rv;
     // TODO: Implement operator==
     // LAB: Smart Pointer Project Lab
 

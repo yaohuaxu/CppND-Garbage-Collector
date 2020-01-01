@@ -105,8 +105,8 @@ Pointer<T,size>::Pointer(T *t) {
     if (first)
         atexit(shutdown);
     first = false;
-    typename std::list<PtrDetails<T> >::iterator p;
-    p = findPtrInfo(t);
+
+    const auto p = findPtrInfo(t);
     p->refcount++;
 
     addr = t;
@@ -118,38 +118,35 @@ Pointer<T,size>::Pointer(T *t) {
         isArray = false;
     }
 
-    PtrDetails<T> p2 = PtrDetails<T>(t, size);
+    const auto p2 = PtrDetails<T>(t, size);
     refContainer.push_back(p2);
-    // TODO: Implement Pointer constructor
+    // TODO(ok): Implement Pointer constructor
     // Lab: Smart Pointer Project Lab
-
 }
 // Copy constructor.
 template< class T, int size>
 Pointer<T,size>::Pointer(const Pointer &ob){
-    typename std::list<PtrDetails<T> >::iterator p;
-    p = findPtrInfo(ob.addr);
+    const auto p = findPtrInfo(ob.addr);
     p->refcount++;
 
     addr = ob.addr;
     isArray = ob.isArray;
     arraySize = ob.arraySize;
-    // TODO: Implement Pointer constructor
+    // TODO(ok): Implement Pointer constructor
     // Lab: Smart Pointer Project Lab
-
 }
 
 // Destructor for Pointer.
 template <class T, int size>
 Pointer<T, size>::~Pointer(){
-    typename std::list<PtrDetails<T> >::iterator p;
-    p = findPtrInfo(addr);
+    // typename std::list<PtrDetails<T> >::iterator p;
+    const auto p = findPtrInfo(addr);
 
     if (p->refcount) {
         p->refcount--;
     }
     collect();
-    // TODO: Implement Pointer destructor
+    // TODO(ok): Implement Pointer destructor
     // Lab: New and Delete Project Lab
 }
 
@@ -210,7 +207,6 @@ T *Pointer<T, size>::operator=(T *t){
     addr = t;
 
     return t;
-
 }
 // Overload assignment of Pointer to Pointer.
 template <class T, int size>
@@ -225,9 +221,8 @@ Pointer<T, size> &Pointer<T, size>::operator=(Pointer &rv){
     addr = rv.addr;
 
     return rv;
-    // TODO: Implement operator==
+    // TODO(ok): Implement operator==
     // LAB: Smart Pointer Project Lab
-
 }
 
 // A utility function that displays refContainer.

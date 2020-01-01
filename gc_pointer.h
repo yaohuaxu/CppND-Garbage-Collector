@@ -109,8 +109,6 @@ Pointer<T,size>::Pointer(T *t) {
     const auto p = findPtrInfo(t);
     p->refcount++;
 
-    addr = t;
-
     if (size > 0) {
         isArray = true;
         arraySize = size;
@@ -118,8 +116,10 @@ Pointer<T,size>::Pointer(T *t) {
         isArray = false;
     }
 
+    addr = t;
+
     const auto p2 = PtrDetails<T>(t, size);
-    refContainer.push_back(p2);
+    refContainer.emplace_back(p2);
     // TODO(ok): Implement Pointer constructor
     // Lab: Smart Pointer Project Lab
 }
@@ -139,7 +139,6 @@ Pointer<T,size>::Pointer(const Pointer &ob){
 // Destructor for Pointer.
 template <class T, int size>
 Pointer<T, size>::~Pointer(){
-    // typename std::list<PtrDetails<T> >::iterator p;
     const auto p = findPtrInfo(addr);
 
     if (p->refcount) {
@@ -189,10 +188,11 @@ T *Pointer<T, size>::operator=(T *t){
     // LAB: Smart Pointer Project Lab
     const auto p1 = findPtrInfo(t);
     p1->refcount++;
+
     if (refContainer.end() == p1) {
         std::cout << "need a new obj" << std::endl;
         const PtrDetails<T> p{t};
-        refContainer.push_back(p);
+        refContainer.emplace_back(p);
     } else {
         p1->refcount++;
     }
